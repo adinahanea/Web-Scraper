@@ -14,18 +14,25 @@ def parse_webpage(content):
     return soup
 
 def extract_data(soup):
-    titles = soup.find_all('h2')
-    extracted_data = [title.text for title in titles]
+    titles = soup.find_all('a', {'class': 'bookTitle'})[:10]
+    extracted_data = []
+    for title in titles:
+        new_book = title.find('a').text.strip()
+        extracted_data.append(new_book)
+
+    with open('data.txt', 'w') as f:
+        for item in extracted_data:
+            f.write(f'{item}\n')
 
     return extracted_data
 
 def main():
-    url = 'https://scrapingrobot.com/blog/web-scraping-ideas/' 
+    url = 'https://books.toscrape.com/'  
     content = get_webpage(url)
     if content:
         soup = parse_webpage(content)
         data = extract_data(soup)
-        print(data)
+        #print(data)
 
 if __name__ == '__main__':
     main()
